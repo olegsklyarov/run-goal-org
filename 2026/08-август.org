@@ -17,7 +17,7 @@
 | 2026-08 |       112 |
 |---------+-----------|
 
-[[file:08-август.png]]
+[[file:08-август.svg]]
 
 # Local Variables:
 # eval: (load (expand-file-name "../running-chart.el" (file-name-directory buffer-file-name)) nil 'nomessage)

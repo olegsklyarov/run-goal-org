@@ -1,9 +1,9 @@
 # Arguments:
-# ARG1=data file, ARG2=output PNG, ARG3=title, ARG4=target km,
+# ARG1=data file, ARG2=output SVG, ARG3=title, ARG4=target km,
 # ARG5=y-axis max, ARG6=number of days in the month.
 
 set encoding utf8
-set terminal pngcairo size 1400,750 enhanced font "Arial,12"
+set terminal svg size 1400,750 enhanced font "Arial,12"
 set output ARG2
 
 set title ARG3

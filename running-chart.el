@@ -41,7 +41,7 @@
   (let* ((directory (file-name-directory source-file))
          (stem (file-name-base source-file)))
     (list (expand-file-name (format "%s-data.org" stem) directory)
-          (expand-file-name (format "%s.png" stem) directory))))
+          (expand-file-name (format "%s.svg" stem) directory))))
 
 (defun running-chart--table (name)
   "Read the Org table named NAME from the current buffer."
@@ -224,7 +224,7 @@ tick of headroom so markers at the peak are not clipped."
         (temporary-output
          (make-temp-file
           (expand-file-name ".running-chart-" running-chart--directory)
-          nil ".png"))
+          nil ".svg"))
         (log-buffer (generate-new-buffer " *running-gnuplot*"))
         (y-max (running-chart--y-max target-km rows)))
     (unwind-protect
