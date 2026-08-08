@@ -1,0 +1,34 @@
+#+title: План бега
+#+startup: inlineimages
+
+* Август 2026
+
+** Тренировки
+
+Можно добавлять несколько строк с одинаковой датой.
+
+#+name: running-log
+|       date | distance |
+|------------+----------|
+| 2026-08-01 |      4.8 |
+| 2026-08-03 |      4.6 |
+| 2026-08-04 |      4.5 |
+| 2026-08-05 |        5 |
+| 2026-08-06 |      4.4 |
+| 2026-08-07 |      4.5 |
+| 2026-08-08 |      7.4 |
+
+** Цель
+
+#+name: running-config
+| month   | target_km |
+|---------+-----------|
+| 2026-08 |       112 |
+
+** График
+
+[[file:running-2026-08.png]]
+
+# Local Variables:
+# eval: (load (expand-file-name "running-chart.el" (file-name-directory buffer-file-name)) nil 'nomessage)
+# End:
