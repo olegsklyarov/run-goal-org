@@ -4,8 +4,9 @@
 
 ;; This file is loaded by the Local Variables block in a monthly journal
 ;; under YEAR/MM-month.org (for example 2026/08-август.org).
-;; Open that journal and run `M-x running-update-chart' (or `C-c r') to
-;; rebuild the generated data file and burn-up chart next to it.
+;; Open that journal and run `M-x running-add-log' (or `C-c l') to append
+;; today's distance to `running-log', and `M-x running-update-chart'
+;; (or `C-c r') to rebuild the generated data file and burn-up chart.
 
 ;;; Code:
 
@@ -259,6 +260,39 @@ tick of headroom so markers at the peak are not clipped."
       (when (derived-mode-p 'org-mode)
         (org-redisplay-inline-images)))))
 
+(defun running-chart--append-log-row (date distance)
+  "Append DATE and DISTANCE as a new row to the running-log table."
+  (save-excursion
+    (goto-char (point-min))
+    (unless (re-search-forward
+             (format "^[ \t]*#\\+name:[ \t]*%s[ \t]*$"
+                     (regexp-quote "running-log"))
+             nil t)
+      (user-error "Не найдена таблица running-log"))
+    (forward-line 1)
+    (while (and (not (eobp))
+                (looking-at-p "^[ \t]*$"))
+      (forward-line 1))
+    (unless (org-at-table-p)
+      (user-error "После #+name: running-log нет Org-таблицы"))
+    (goto-char (org-table-end))
+    (insert (format "| %s | %s |\n" date distance))
+    (forward-line -1)
+    (org-table-align)))
+
+;;;###autoload
+(defun running-add-log (distance)
+  "Append today's DATE and DISTANCE km to the running-log table."
+  (interactive "nДистанция (км): ")
+  (running-chart--source-file)
+  (let* ((parsed (running-chart--number distance "Дистанция"))
+         (distance-text (format "%g" parsed))
+         (date (format-time-string "%Y-%m-%d")))
+    (unless (> parsed 0)
+      (user-error "Дистанция должна быть больше нуля"))
+    (running-chart--append-log-row date distance-text)
+    (message "Добавлено: %s — %s км" date distance-text)))
+
 ;;;###autoload
 (defun running-update-chart ()
   "Rebuild the data file and burn-up chart for the current monthly journal."
@@ -294,6 +328,7 @@ tick of headroom so markers at the peak are not clipped."
 (defun running-chart--setup-local-keys ()
   "Bind chart commands in the current monthly journal buffer."
   (when (derived-mode-p 'org-mode)
+    (local-set-key (kbd "C-c l") #'running-add-log)
     (local-set-key (kbd "C-c r") #'running-update-chart)))
 
 (running-chart--setup-local-keys)
