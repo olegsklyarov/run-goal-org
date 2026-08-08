@@ -4,8 +4,8 @@
 
 ;; This file is loaded by the Local Variables block in a monthly journal
 ;; under YEAR/MM-month.org (for example 2026/08-август.org).
-;; Open that journal and run `M-x running-update-chart' to rebuild the
-;; generated data file and burn-up chart next to it.
+;; Open that journal and run `M-x running-update-chart' (or `C-c r') to
+;; rebuild the generated data file and burn-up chart next to it.
 
 ;;; Code:
 
@@ -290,6 +290,13 @@ tick of headroom so markers at the peak are not clipped."
        rows output-path title target-km days-in-month)
       (running-chart--refresh-inline-image source-file)
       (message "График обновлён: %s" output-path))))
+
+(defun running-chart--setup-local-keys ()
+  "Bind chart commands in the current monthly journal buffer."
+  (when (derived-mode-p 'org-mode)
+    (local-set-key (kbd "C-c r") #'running-update-chart)))
+
+(running-chart--setup-local-keys)
 
 (provide 'running-chart)
 
