@@ -2,8 +2,10 @@
 
 ;;; Commentary:
 
-;; This file is loaded by the Local Variables block in running.org.
-;; Run `M-x running-update-chart' to rebuild the generated data and chart.
+;; This file is loaded by the Local Variables block in a monthly journal
+;; under YEAR/MM-month.org (for example 2026/08-август.org).
+;; Open that journal and run `M-x running-update-chart' to rebuild the
+;; generated data file and burn-up chart next to it.
 
 ;;; Code:
 
@@ -27,8 +29,18 @@
   "Russian month names used in chart titles.")
 
 (defun running-chart--source-file ()
-  "Return the absolute path of the running journal."
-  (expand-file-name "running.org" running-chart--directory))
+  "Return the absolute path of the monthly journal in the current buffer."
+  (unless (and buffer-file-name
+               (string-match-p "\\.org\\'" buffer-file-name))
+    (user-error "Откройте месячный журнал (*.org) и повторите команду"))
+  (expand-file-name buffer-file-name))
+
+(defun running-chart--artifact-paths (source-file)
+  "Return (DATA-PATH OUTPUT-PATH) for monthly journal SOURCE-FILE."
+  (let* ((directory (file-name-directory source-file))
+         (stem (file-name-base source-file)))
+    (list (expand-file-name (format "%s-data.org" stem) directory)
+          (expand-file-name (format "%s.png" stem) directory))))
 
 (defun running-chart--table (name)
   "Read the Org table named NAME from the current buffer."
@@ -249,7 +261,7 @@ tick of headroom so markers at the peak are not clipped."
 
 ;;;###autoload
 (defun running-update-chart ()
-  "Rebuild running-data.org and the monthly running chart."
+  "Rebuild the data file and burn-up chart for the current monthly journal."
   (interactive)
   (let* ((source-file (running-chart--source-file))
          config-table
@@ -259,7 +271,7 @@ tick of headroom so markers at the peak are not clipped."
     (with-current-buffer (find-file-noselect source-file)
       (setq config-table (running-chart--table "running-config")
             workout-table (running-chart--table "running-log")))
-    (pcase-let* ((`(,month-string ,year ,month ,target-km)
+    (pcase-let* ((`(,_month-string ,year ,month ,target-km)
                   (running-chart--config config-table))
                  (distances
                   (running-chart--distances-by-day
@@ -267,13 +279,8 @@ tick of headroom so markers at the peak are not clipped."
                  (rows
                   (running-chart--rows year month target-km distances))
                  (days-in-month (length rows))
-                 (data-path
-                  (expand-file-name "running-data.org"
-                                    running-chart--directory))
-                 (output-path
-                  (expand-file-name
-                   (format "running-%s.png" month-string)
-                   running-chart--directory))
+                 (`(,data-path ,output-path)
+                  (running-chart--artifact-paths source-file))
                  (title
                   (format "Бег: %s %d"
                           (aref running-chart--month-names (1- month))

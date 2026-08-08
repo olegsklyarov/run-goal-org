@@ -1,4 +1,12 @@
 .DS_Store
 *.png
-*-data.org
+*data.org
 
+# Emacs lock files
+.#*
+
+# Emacs autosave files
+\#*#
+
+# Emacs backup files
+*~
