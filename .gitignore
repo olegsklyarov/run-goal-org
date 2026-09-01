@@ -1,5 +1,8 @@
 .DS_Store
 *data.org
+*.svg.tmp.*
+*.plot-*.tsv
+*.md.tmp.*
 
 # Emacs lock files
 .#*
