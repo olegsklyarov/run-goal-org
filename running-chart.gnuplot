@@ -3,17 +3,23 @@
 # ARG5=y-axis max, ARG6=number of days in the month.
 
 set encoding utf8
-set terminal svg size 1400,750 enhanced font "Arial,12"
+# A4 landscape: 297mm × 210mm at 96 dpi (CSS px), so print fills the sheet.
+set terminal svg size 1123,794 enhanced font "Arial,12" background rgb "white"
 set output ARG2
+set size 1,1
+set origin 0,0
 
 set title ARG3
-set xlabel "День месяца" offset 0,-1
+set xlabel "День месяца" offset 0,-0.5
 set ylabel "Накопленный километраж, км"
 
 set key top left
 set grid ytics
 set border 3
 set tics out
+set lmargin 10
+set rmargin 2
+set tmargin 3
 set bmargin 5
 set datafile separator "\t"
 set datafile missing "NaN"

@@ -211,6 +211,17 @@ tick of headroom so markers at the peak are not clipped."
           (setq peak (max peak (string-to-number actual))))))
     (+ 5 (* 5 (ceiling (/ (float peak) 5))))))
 
+(defun running-chart--set-a4-page-size (path)
+  "Set SVG at PATH to A4 landscape physical size (297mm × 210mm)."
+  (with-temp-buffer
+    (insert-file-contents path)
+    (goto-char (point-min))
+    (when (re-search-forward
+           "width=\"[0-9.]+\" height=\"[0-9.]+\""
+           nil t)
+      (replace-match "width=\"297mm\" height=\"210mm\"" t t)
+      (write-region (point-min) (point-max) path nil 'silent))))
+
 (defun running-chart--call-gnuplot
     (rows output-path title target-km days-in-month)
   "Render ROWS to OUTPUT-PATH with TITLE and chart bounds."
@@ -246,6 +257,7 @@ tick of headroom so markers at the peak are not clipped."
                           (string-trim
                            (with-current-buffer log-buffer
                              (buffer-string))))))
+          (running-chart--set-a4-page-size temporary-output)
           (set-file-modes temporary-output #o644)
           (rename-file temporary-output output-path t))
       (dolist (path (list data-path temporary-output))
