@@ -2,11 +2,13 @@
 
 ;;; Commentary:
 
-;; This file is loaded by the Local Variables block in a monthly journal
-;; under YEAR/MM-month.org (for example 2026/08-август.org).
-;; Open that journal and run `M-x running-add-log' (or `C-c l') to append
-;; today's distance to `running-log', and `M-x running-update-chart'
-;; (or `C-c r') to rebuild the generated data file and burn-up chart.
+;; This file is loaded by the Local Variables block in a journal under
+;; YEAR/MM-month.org (for example 2026/08-август.org) or YEAR/YEAR.org
+;; (for example 2026/2026.org).
+;; Open a monthly journal and run `M-x running-add-log' (or `C-c l') to
+;; append today's distance to `running-log'.  In either a monthly or a
+;; yearly journal, run `M-x running-update-chart' (or `C-c r') to rebuild
+;; the generated data file and burn-up chart.
 
 ;;; Code:
 
@@ -27,17 +29,27 @@
 (defconst running-chart--month-names
   ["январь" "февраль" "март" "апрель" "май" "июнь"
    "июль" "август" "сентябрь" "октябрь" "ноябрь" "декабрь"]
-  "Russian month names used in chart titles.")
+  "Russian month names used in monthly chart titles.")
+
+(defconst running-chart--month-abbreviations
+  ["янв" "фев" "мар" "апр" "май" "июн"
+   "июл" "авг" "сен" "окт" "ноя" "дек"]
+  "Russian abbreviated month names used in yearly chart labels.")
 
 (defun running-chart--source-file ()
-  "Return the absolute path of the monthly journal in the current buffer."
+  "Return the absolute path of the journal in the current buffer."
   (unless (and buffer-file-name
                (string-match-p "\\.org\\'" buffer-file-name))
-    (user-error "Откройте месячный журнал (*.org) и повторите команду"))
+    (user-error "Откройте журнал (*.org) и повторите команду"))
   (expand-file-name buffer-file-name))
 
+(defun running-chart--year-journal-p (source-file)
+  "Return non-nil if SOURCE-FILE is a yearly journal named YYYY.org."
+  (string-match-p "\\`[0-9]\\{4\\}\\.org\\'"
+                  (file-name-nondirectory source-file)))
+
 (defun running-chart--artifact-paths (source-file)
-  "Return (DATA-PATH OUTPUT-PATH) for monthly journal SOURCE-FILE."
+  "Return (DATA-PATH OUTPUT-PATH) for journal SOURCE-FILE."
   (let* ((directory (file-name-directory source-file))
          (stem (file-name-base source-file)))
     (list (expand-file-name (format "%s-data.org" stem) directory)
@@ -100,6 +112,21 @@ Signal an error for an empty NAME table unless ALLOW-EMPTY is non-nil."
           (user-error "Цель target_km должна быть больше нуля"))
         (list month-string year month target-km)))))
 
+(defun running-chart--year-config (table)
+  "Validate yearly TABLE and return (YEAR TARGET-KM)."
+  (let ((rows (running-chart--data-rows table "running-config")))
+    (unless (= (length rows) 1)
+      (user-error "В running-config должна быть ровно одна строка данных"))
+    (pcase-let* ((`(,year-value ,target-value . ,_) (car rows))
+                 (year-text (string-trim (format "%s" year-value)))
+                 (target-km
+                  (running-chart--number target-value "Цель target_km")))
+      (unless (string-match-p "\\`[0-9]\\{4\\}\\'" year-text)
+        (user-error "Год должен иметь формат YYYY: %s" year-text))
+      (unless (> target-km 0)
+        (user-error "Цель target_km должна быть больше нуля"))
+      (list (string-to-number year-text) target-km))))
+
 (defun running-chart--parse-date (value)
   "Parse and validate ISO date VALUE, returning (YEAR MONTH DAY)."
   (let ((text (string-trim (format "%s" value))))
@@ -115,6 +142,19 @@ Signal an error for an empty NAME table unless ALLOW-EMPTY is non-nil."
         (user-error "Некорректная дата: %s" text))
       (list year month day))))
 
+(defun running-chart--parse-year-month (value)
+  "Parse and validate YYYY-MM VALUE, returning (YEAR MONTH)."
+  (let ((text (string-trim (format "%s" value))))
+    (unless (string-match
+             "\\`\\([0-9]\\{4\\}\\)-\\([0-9]\\{2\\}\\)\\'"
+             text)
+      (user-error "Месяц должен иметь формат YYYY-MM: %s" text))
+    (let ((year (string-to-number (match-string 1 text)))
+          (month (string-to-number (match-string 2 text))))
+      (unless (<= 1 month 12)
+        (user-error "Некорректный номер месяца: %s" text))
+      (list year month))))
+
 (defun running-chart--distances-by-day (table selected-year selected-month)
   "Aggregate workout TABLE for SELECTED-YEAR and SELECTED-MONTH."
   (let ((distances (make-hash-table :test #'eql)))
@@ -129,6 +169,27 @@ Signal an error for an empty NAME table unless ALLOW-EMPTY is non-nil."
                    (= month selected-month))
           (puthash day
                    (+ distance (gethash day distances 0.0))
+                   distances))))
+    distances))
+
+(defun running-chart--distances-by-month (table selected-year)
+  "Read monthly totals from TABLE for SELECTED-YEAR.
+Empty distances are skipped.  Duplicate months or a month from
+another year signal an error."
+  (let ((distances (make-hash-table :test #'eql)))
+    (dolist (row (running-chart--data-rows table "running-months" t))
+      (pcase-let* ((`(,month-value ,distance-value . ,_) row)
+                   (`(,year ,month)
+                    (running-chart--parse-year-month month-value))
+                   (text (string-trim (format "%s" (or distance-value "")))))
+        (unless (= year selected-year)
+          (user-error "Месяц %s не относится к %d году"
+                      month-value selected-year))
+        (when (gethash month distances)
+          (user-error "Месяц %s указан повторно" month-value))
+        (unless (string-empty-p text)
+          (puthash month
+                   (running-chart--number text "Дистанция за месяц")
                    distances))))
     distances))
 
@@ -168,6 +229,26 @@ Signal an error for an empty NAME table unless ALLOW-EMPTY is non-nil."
                 rows)))
     (nreverse rows)))
 
+(defun running-chart--year-rows (target-km distances)
+  "Build yearly chart rows for TARGET-KM and monthly DISTANCES."
+  (let* ((last-actual-month (running-chart--max-logged-day distances))
+         (cumulative 0.0)
+         rows)
+    (cl-loop for month from 1 to 12 do
+             (let* ((label
+                     (aref running-chart--month-abbreviations (1- month)))
+                    (ideal
+                     (* target-km (/ (float month) 12)))
+                    actual)
+               (when (<= month last-actual-month)
+                 (setq cumulative
+                       (+ cumulative (gethash month distances 0.0)))
+                 (setq actual (format "%.2f" cumulative)))
+               (push
+                (list month label (format "%.2f" ideal) (or actual "NaN"))
+                rows)))
+    (nreverse rows)))
+
 (defun running-chart--write-data-file (path rows)
   "Atomically write generated Org table ROWS to PATH."
   (let ((temporary-path
@@ -199,17 +280,19 @@ Signal an error for an empty NAME table unless ALLOW-EMPTY is non-nil."
       (insert (mapconcat (lambda (value) (format "%s" value)) row "\t"))
       (insert "\n"))))
 
-(defun running-chart--y-max (target-km rows)
+(defun running-chart--y-max (target-km rows &optional step)
   "Return Y-axis max from TARGET-KM and actual values in ROWS.
 The result is the max of TARGET-KM and the largest actual cumulative
-distance, rounded up to the nearest multiple of 5, plus one extra
-tick of headroom so markers at the peak are not clipped."
-  (let ((peak target-km))
+distance, rounded up to the nearest multiple of STEP, plus one extra
+tick of headroom so markers at the peak are not clipped.
+STEP defaults to 5."
+  (let ((step (or step 5))
+        (peak target-km))
     (dolist (row rows)
       (let ((actual (nth 3 row)))
         (unless (or (null actual) (equal actual "NaN"))
           (setq peak (max peak (string-to-number actual))))))
-    (+ 5 (* 5 (ceiling (/ (float peak) 5))))))
+    (+ step (* step (ceiling (/ (float peak) step))))))
 
 (defun running-chart--set-a4-page-size (path)
   "Set SVG at PATH to A4 landscape physical size (297mm × 210mm)."
@@ -223,7 +306,7 @@ tick of headroom so markers at the peak are not clipped."
       (write-region (point-min) (point-max) path nil 'silent))))
 
 (defun running-chart--call-gnuplot
-    (rows output-path title target-km days-in-month)
+    (rows output-path title target-km n-points xlabel y-step)
   "Render ROWS to OUTPUT-PATH with TITLE and chart bounds."
   (let ((gnuplot (executable-find "gnuplot"))
         (script-path
@@ -237,7 +320,7 @@ tick of headroom so markers at the peak are not clipped."
           (expand-file-name ".running-chart-" running-chart--directory)
           nil ".svg"))
         (log-buffer (generate-new-buffer " *running-gnuplot*"))
-        (y-max (running-chart--y-max target-km rows)))
+        (y-max (running-chart--y-max target-km rows y-step)))
     (unwind-protect
         (progn
           (unless gnuplot
@@ -251,7 +334,9 @@ tick of headroom so markers at the peak are not clipped."
                   "-c" script-path data-path temporary-output title
                   (number-to-string target-km)
                   (number-to-string y-max)
-                  (number-to-string days-in-month))))
+                  (number-to-string n-points)
+                  xlabel
+                  (number-to-string y-step))))
             (unless (and (integerp status) (zerop status))
               (user-error "gnuplot завершился с ошибкой: %s"
                           (string-trim
@@ -296,7 +381,9 @@ tick of headroom so markers at the peak are not clipped."
 (defun running-add-log (distance)
   "Append today's DATE and DISTANCE km to the running-log table."
   (interactive "nДистанция (км): ")
-  (running-chart--source-file)
+  (let ((source-file (running-chart--source-file)))
+    (when (running-chart--year-journal-p source-file)
+      (user-error "running-add-log работает только в месячном журнале")))
   (let* ((parsed (running-chart--number distance "Дистанция"))
          (distance-text (format "%g" parsed))
          (date (format-time-string "%Y-%m-%d")))
@@ -305,15 +392,9 @@ tick of headroom so markers at the peak are not clipped."
     (running-chart--append-log-row date distance-text)
     (message "Добавлено: %s — %s км" date distance-text)))
 
-;;;###autoload
-(defun running-update-chart ()
-  "Rebuild the data file and burn-up chart for the current monthly journal."
-  (interactive)
-  (let* ((source-file (running-chart--source-file))
-         config-table
-         workout-table)
-    (unless (file-readable-p source-file)
-      (user-error "Не найден журнал %s" source-file))
+(defun running-chart--update-month-chart (source-file)
+  "Rebuild the monthly data file and burn-up chart for SOURCE-FILE."
+  (let (config-table workout-table)
     (with-current-buffer (find-file-noselect source-file)
       (setq config-table (running-chart--table "running-config")
             workout-table (running-chart--table "running-log")))
@@ -333,12 +414,44 @@ tick of headroom so markers at the peak are not clipped."
                           year)))
       (running-chart--write-data-file data-path rows)
       (running-chart--call-gnuplot
-       rows output-path title target-km days-in-month)
+       rows output-path title target-km days-in-month "День месяца" 5)
       (running-chart--refresh-inline-image source-file)
       (message "График обновлён: %s" output-path))))
 
+(defun running-chart--update-year-chart (source-file)
+  "Rebuild the yearly data file and burn-up chart for SOURCE-FILE."
+  (let (config-table months-table)
+    (with-current-buffer (find-file-noselect source-file)
+      (setq config-table (running-chart--table "running-config")
+            months-table (running-chart--table "running-months")))
+    (pcase-let* ((`(,year ,target-km)
+                  (running-chart--year-config config-table))
+                 (distances
+                  (running-chart--distances-by-month months-table year))
+                 (rows
+                  (running-chart--year-rows target-km distances))
+                 (`(,data-path ,output-path)
+                  (running-chart--artifact-paths source-file))
+                 (title (format "Бег: %d" year)))
+      (running-chart--write-data-file data-path rows)
+      (running-chart--call-gnuplot
+       rows output-path title target-km 12 "Месяц" 50)
+      (running-chart--refresh-inline-image source-file)
+      (message "График обновлён: %s" output-path))))
+
+;;;###autoload
+(defun running-update-chart ()
+  "Rebuild the data file and burn-up chart for the current journal."
+  (interactive)
+  (let ((source-file (running-chart--source-file)))
+    (unless (file-readable-p source-file)
+      (user-error "Не найден журнал %s" source-file))
+    (if (running-chart--year-journal-p source-file)
+        (running-chart--update-year-chart source-file)
+      (running-chart--update-month-chart source-file))))
+
 (defun running-chart--setup-local-keys ()
-  "Bind chart commands in the current monthly journal buffer."
+  "Bind chart commands in the current journal buffer."
   (when (derived-mode-p 'org-mode)
     (local-set-key (kbd "C-c l") #'running-add-log)
     (local-set-key (kbd "C-c r") #'running-update-chart)))
