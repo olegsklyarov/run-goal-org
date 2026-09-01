@@ -145,7 +145,7 @@ test('y-max rounds up with one extra tick', function (): void {
     assertFloat(120.0, $series->yMax());
 });
 
-test('current year extends through the current month without a marker', function (): void {
+test('current year shows only closed months', function (): void {
     $today = Date::parse('2026-09-01');
     $series = BurnUpSeries::fromYear(2026, 600.0, [
         1 => 21.66,
@@ -156,13 +156,34 @@ test('current year extends through the current month without a marker', function
     assertFloat(21.66, $series->points()[1]->actual());
     assertFloat(42.14, $series->points()[2]->actual());
     assertFloat(155.54, $series->points()[7]->actual());
-    assertFloat(155.54, $series->points()[8]->actual(), 'September carries August total');
-    assertSame(null, $series->points()[9]->actual());
+    assertSame(null, $series->points()[8]->actual(), 'September is not closed on 1 September');
     assertSame(true, $series->points()[0]->hasMarker());
     assertSame(false, $series->points()[1]->hasMarker());
     assertSame(true, $series->points()[7]->hasMarker());
     assertSame(false, $series->points()[8]->hasMarker());
     assertFloat(650.0, $series->yMax());
+});
+
+test('September appears on the year chart from 1 October', function (): void {
+    $today = Date::parse('2026-10-01');
+    $series = BurnUpSeries::fromYear(2026, 600.0, [
+        8 => 113.4,
+        9 => 10.0,
+    ], $today);
+    assertFloat(113.4, $series->points()[7]->actual());
+    assertFloat(123.4, $series->points()[8]->actual());
+    assertSame(null, $series->points()[9]->actual());
+    assertSame(true, $series->points()[8]->hasMarker());
+});
+
+test('January of the current year is hidden until 1 February', function (): void {
+    $today = Date::parse('2026-01-15');
+    $series = BurnUpSeries::fromYear(2026, 600.0, [
+        1 => 21.66,
+    ], $today);
+    foreach ($series->points() as $point) {
+        assertSame(null, $point->actual());
+    }
 });
 
 test('past year extends horizontally through December', function (): void {

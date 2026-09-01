@@ -143,7 +143,7 @@ final class BurnUpSeries
         }
 
         if ($year === (int) $today->format('Y')) {
-            return (int) $today->format('n');
+            return (int) $today->format('n') - 1;
         }
 
         return 12;
