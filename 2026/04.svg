@@ -385,37 +385,13 @@
 		L318.53,704.00 L352.05,704.00 L385.57,704.00 L419.08,704.00 L452.60,704.00 L486.12,704.00 L519.64,704.00 L553.16,704.00
 		L586.68,704.00 L620.19,704.00 L653.71,704.00 L687.23,704.00 L720.75,704.00 L754.27,704.00 L787.79,704.00 L821.30,704.00
 		L854.82,704.00 L888.34,704.00 L921.86,704.00 L955.38,704.00 L988.90,704.00 L1022.41,704.00 L1055.93,704.00 L1089.45,244.67
-		 '/>	<use xlink:href='#gpPt6' transform='translate(117.42,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(150.94,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(184.46,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(217.97,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(251.49,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(285.01,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(318.53,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(352.05,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(385.57,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(419.08,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(452.60,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(486.12,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(519.64,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(553.16,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(586.68,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(620.19,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(653.71,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(687.23,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(720.75,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(754.27,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(787.79,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(821.30,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(854.82,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(888.34,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(921.86,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(955.38,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(988.90,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(1022.41,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(1055.93,704.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
+		 '/></g>
+	</g>
+	<g id="gnuplot_plot_5"  fill="none"><title>gnuplot_plot_5</title>
+<g fill="none" color="#FFFFFF" stroke="rgb( 35, 116, 216)" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<use xlink:href='#gpPt6' transform='translate(1089.45,244.67) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(298.15,90.01) scale(4.05)' color='rgb( 35, 116, 216)'/>
 </g>
 	</g>
 <g fill="none" color="#FFFFFF" stroke="rgb( 35, 116, 216)" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">

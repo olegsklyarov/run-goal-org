@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace RunOrg\Domain;
 
+use DateTimeImmutable;
+
 final class BurnUpSeries
 {
     public const MONTH_Y_STEP = 5.0;
@@ -21,12 +23,15 @@ final class BurnUpSeries
     ) {
     }
 
-    public static function fromMonth(MonthJournal $journal): self
-    {
+    public static function fromMonth(
+        MonthJournal $journal,
+        ?DateTimeImmutable $today = null
+    ): self {
+        $today ??= Date::today();
         $period = $journal->period();
         $daysInMonth = $period->daysInMonth();
         $distances = $journal->distancesByDay();
-        $lastActualDay = $distances === [] ? 0 : max(array_keys($distances));
+        $lastVisibleDay = self::lastVisibleDay($period, $distances, $today);
 
         $points = [];
         $cumulative = 0.0;
@@ -37,11 +42,18 @@ final class BurnUpSeries
                 ? $weekday . '\\n' . $day
                 : $weekday;
             $actual = null;
-            if ($day <= $lastActualDay) {
+            if ($day <= $lastVisibleDay) {
                 $cumulative += $distances[$day] ?? 0.0;
                 $actual = $cumulative;
             }
-            $points[] = new BurnUpPoint($day, $label, $actual, $weekdayIndex === 0);
+            $hasMarker = $actual !== null && isset($distances[$day]);
+            $points[] = new BurnUpPoint(
+                $day,
+                $label,
+                $actual,
+                $weekdayIndex === 0,
+                $hasMarker
+            );
         }
 
         $title = sprintf(
@@ -62,23 +74,30 @@ final class BurnUpSeries
     /**
      * @param array<int, float> $distances month number => km
      */
-    public static function fromYear(int $year, float $targetKm, array $distances): self
-    {
-        $lastActualMonth = $distances === [] ? 0 : max(array_keys($distances));
+    public static function fromYear(
+        int $year,
+        float $targetKm,
+        array $distances,
+        ?DateTimeImmutable $today = null
+    ): self {
+        $today ??= Date::today();
+        $lastVisibleMonth = self::lastVisibleMonth($year, $distances, $today);
 
         $points = [];
         $cumulative = 0.0;
         for ($month = 1; $month <= 12; $month++) {
             $actual = null;
-            if ($month <= $lastActualMonth) {
+            if ($month <= $lastVisibleMonth) {
                 $cumulative += $distances[$month] ?? 0.0;
                 $actual = $cumulative;
             }
+            $hasMarker = $actual !== null && isset($distances[$month]);
             $points[] = new BurnUpPoint(
                 $month,
                 Labels::monthAbbreviation($month),
                 $actual,
-                false
+                false,
+                $hasMarker
             );
         }
 
@@ -89,6 +108,45 @@ final class BurnUpSeries
             'Месяц',
             self::YEAR_Y_STEP
         );
+    }
+
+    /**
+     * @param array<int, float> $distances
+     */
+    private static function lastVisibleDay(
+        YearMonth $period,
+        array $distances,
+        DateTimeImmutable $today
+    ): int {
+        if ($distances === []) {
+            return 0;
+        }
+
+        $todayPeriod = YearMonth::fromDate($today);
+        if ($period->equals($todayPeriod)) {
+            return min((int) $today->format('j'), $period->daysInMonth());
+        }
+
+        return $period->daysInMonth();
+    }
+
+    /**
+     * @param array<int, float> $distances
+     */
+    private static function lastVisibleMonth(
+        int $year,
+        array $distances,
+        DateTimeImmutable $today
+    ): int {
+        if ($distances === []) {
+            return 0;
+        }
+
+        if ($year === (int) $today->format('Y')) {
+            return (int) $today->format('n');
+        }
+
+        return 12;
     }
 
     /**

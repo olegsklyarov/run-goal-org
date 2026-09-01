@@ -45,22 +45,25 @@ test('numbers reject comma and negatives', function (): void {
 });
 
 test('empty journal produces only NaN actuals', function (): void {
+    $today = Date::parse('2026-09-01');
     $journal = new MonthJournal(YearMonth::fromString('2026-09'), 70.0);
-    $series = BurnUpSeries::fromMonth($journal);
+    $series = BurnUpSeries::fromMonth($journal, $today);
     assertSame(30, $series->pointCount());
     foreach ($series->points() as $point) {
         assertSame(null, $point->actual());
+        assertSame(false, $point->hasMarker());
     }
     assertFloat(75.0, $series->yMax());
     assertSame(true, $series->hasIdealPlan());
 });
 
 test('month without target has no ideal plan and y-max from actuals', function (): void {
+    $today = Date::parse('2026-09-01');
     $period = YearMonth::fromString('2026-01');
     $journal = new MonthJournal($period, null, [
         new Workout(Date::parse('2026-01-31'), 21.66),
     ]);
-    $series = BurnUpSeries::fromMonth($journal);
+    $series = BurnUpSeries::fromMonth($journal, $today);
     assertSame(null, $journal->targetKm());
     assertSame(false, $series->hasIdealPlan());
     assertFloat(21.66, $series->points()[30]->actual());
@@ -68,6 +71,7 @@ test('month without target has no ideal plan and y-max from actuals', function (
 });
 
 test('several workouts on one date are summed', function (): void {
+    $today = Date::parse('2026-09-01');
     $period = YearMonth::fromString('2026-08');
     $journal = new MonthJournal($period, 112.0, [
         new Workout(Date::parse('2026-08-01'), 4.0),
@@ -77,11 +81,15 @@ test('several workouts on one date are summed', function (): void {
     $byDay = $journal->distancesByDay();
     assertFloat(5.5, $byDay[1]);
     assertFloat(2.0, $byDay[3]);
-    $series = BurnUpSeries::fromMonth($journal);
+    $series = BurnUpSeries::fromMonth($journal, $today);
     assertFloat(5.5, $series->points()[0]->actual());
     assertFloat(5.5, $series->points()[1]->actual());
     assertFloat(7.5, $series->points()[2]->actual());
-    assertSame(null, $series->points()[3]->actual());
+    assertFloat(7.5, $series->points()[3]->actual());
+    assertSame(true, $series->points()[0]->hasMarker());
+    assertSame(false, $series->points()[1]->hasMarker());
+    assertSame(true, $series->points()[2]->hasMarker());
+    assertSame(false, $series->points()[3]->hasMarker());
 });
 
 test('workout outside the month is rejected', function (): void {
@@ -92,44 +100,85 @@ test('workout outside the month is rejected', function (): void {
     });
 });
 
-test('cumulative stops at last logged day', function (): void {
+test('past month extends horizontally to the last day', function (): void {
+    $today = Date::parse('2026-09-01');
+    $period = YearMonth::fromString('2026-01');
+    $journal = new MonthJournal($period, null, [
+        new Workout(Date::parse('2026-01-08'), 5.4),
+        new Workout(Date::parse('2026-01-26'), 5.46),
+    ]);
+    $series = BurnUpSeries::fromMonth($journal, $today);
+    assertFloat(5.4, $series->points()[7]->actual());
+    assertFloat(5.4, $series->points()[24]->actual());
+    assertFloat(10.86, $series->points()[25]->actual());
+    assertFloat(10.86, $series->points()[30]->actual(), 'line continues to 31 January');
+    assertSame(true, $series->points()[7]->hasMarker());
+    assertSame(false, $series->points()[24]->hasMarker());
+    assertSame(true, $series->points()[25]->hasMarker());
+    assertSame(false, $series->points()[30]->hasMarker());
+    assertSame(true, $series->points()[3]->isSunday());
+});
+
+test('current month stops at today', function (): void {
+    $today = Date::parse('2026-08-15');
     $period = YearMonth::fromString('2026-08');
     $journal = new MonthJournal($period, 112.0, [
         new Workout(Date::parse('2026-08-01'), 4.8),
         new Workout(Date::parse('2026-08-03'), 4.6),
+        new Workout(Date::parse('2026-08-20'), 5.0),
     ]);
-    $series = BurnUpSeries::fromMonth($journal);
+    $series = BurnUpSeries::fromMonth($journal, $today);
     assertFloat(4.8, $series->points()[0]->actual());
-    assertFloat(4.8, $series->points()[1]->actual(), 'gap day still carries cumulative');
-    assertFloat(9.4, $series->points()[2]->actual());
-    assertSame(null, $series->points()[3]->actual());
-    assertSame(true, $series->points()[1]->isSunday());
+    assertFloat(9.4, $series->points()[14]->actual());
+    assertSame(null, $series->points()[15]->actual());
+    assertSame(null, $series->points()[19]->actual());
+    assertSame(false, $series->points()[19]->hasMarker());
 });
 
 test('y-max rounds up with one extra tick', function (): void {
+    $today = Date::parse('2026-09-01');
     $period = YearMonth::fromString('2026-08');
     $journal = new MonthJournal($period, 112.0, [
         new Workout(Date::parse('2026-08-30'), 113.4),
     ]);
-    $series = BurnUpSeries::fromMonth($journal);
+    $series = BurnUpSeries::fromMonth($journal, $today);
     assertFloat(120.0, $series->yMax());
 });
 
-test('year series fills empty months before last record with zero', function (): void {
+test('current year extends through the current month without a marker', function (): void {
+    $today = Date::parse('2026-09-01');
     $series = BurnUpSeries::fromYear(2026, 600.0, [
         1 => 21.66,
         3 => 20.48,
-    ]);
+        8 => 113.4,
+    ], $today);
     assertFloat(21.66, $series->points()[0]->actual());
     assertFloat(21.66, $series->points()[1]->actual());
     assertFloat(42.14, $series->points()[2]->actual());
-    assertSame(null, $series->points()[3]->actual());
+    assertFloat(155.54, $series->points()[7]->actual());
+    assertFloat(155.54, $series->points()[8]->actual(), 'September carries August total');
+    assertSame(null, $series->points()[9]->actual());
+    assertSame(true, $series->points()[0]->hasMarker());
+    assertSame(false, $series->points()[1]->hasMarker());
+    assertSame(true, $series->points()[7]->hasMarker());
+    assertSame(false, $series->points()[8]->hasMarker());
     assertFloat(650.0, $series->yMax());
+});
+
+test('past year extends horizontally through December', function (): void {
+    $today = Date::parse('2027-01-15');
+    $series = BurnUpSeries::fromYear(2026, 600.0, [
+        1 => 21.66,
+        8 => 113.4,
+    ], $today);
+    assertFloat(135.06, $series->points()[11]->actual());
+    assertSame(false, $series->points()[11]->hasMarker());
+    assertSame(true, $series->points()[0]->hasMarker());
 });
 
 test('odd days get weekday plus day number in label', function (): void {
     $journal = new MonthJournal(YearMonth::fromString('2026-08'), 112.0);
-    $series = BurnUpSeries::fromMonth($journal);
+    $series = BurnUpSeries::fromMonth($journal, Date::parse('2026-09-01'));
     assertSame('Сб\\n1', $series->points()[0]->label());
     assertSame('Вс', $series->points()[1]->label());
 });

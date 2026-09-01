@@ -627,37 +627,28 @@
 		L311.08,553.42 L343.53,513.34 L375.99,513.34 L408.44,475.42 L440.90,475.42 L473.35,448.34 L505.81,448.34 L538.26,448.34
 		L570.71,448.34 L603.17,448.34 L635.62,448.34 L668.08,448.34 L700.53,423.96 L732.99,395.80 L765.44,333.51 L797.89,333.51
 		L830.35,273.38 L862.80,273.38 L895.26,273.38 L927.71,273.38 L960.17,273.38 L992.62,212.17 L1025.07,150.97 L1057.53,89.76
-		 '/>	<use xlink:href='#gpPt6' transform='translate(116.35,678.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(148.81,678.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
+		L1089.98,89.76  '/></g>
+	</g>
+	<g id="gnuplot_plot_5"  fill="none"><title>gnuplot_plot_5</title>
+<g fill="none" color="#FFFFFF" stroke="rgb( 35, 116, 216)" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<use xlink:href='#gpPt6' transform='translate(116.35,678.00) scale(4.05)' color='rgb( 35, 116, 216)'/>
 	<use xlink:href='#gpPt6' transform='translate(181.26,653.08) scale(4.05)' color='rgb( 35, 116, 216)'/>
 	<use xlink:href='#gpPt6' transform='translate(213.72,628.71) scale(4.05)' color='rgb( 35, 116, 216)'/>
 	<use xlink:href='#gpPt6' transform='translate(246.17,601.63) scale(4.05)' color='rgb( 35, 116, 216)'/>
 	<use xlink:href='#gpPt6' transform='translate(278.63,577.79) scale(4.05)' color='rgb( 35, 116, 216)'/>
 	<use xlink:href='#gpPt6' transform='translate(311.08,553.42) scale(4.05)' color='rgb( 35, 116, 216)'/>
 	<use xlink:href='#gpPt6' transform='translate(343.53,513.34) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(375.99,513.34) scale(4.05)' color='rgb( 35, 116, 216)'/>
 	<use xlink:href='#gpPt6' transform='translate(408.44,475.42) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(440.90,475.42) scale(4.05)' color='rgb( 35, 116, 216)'/>
 	<use xlink:href='#gpPt6' transform='translate(473.35,448.34) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(505.81,448.34) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(538.26,448.34) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(570.71,448.34) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(603.17,448.34) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(635.62,448.34) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(668.08,448.34) scale(4.05)' color='rgb( 35, 116, 216)'/>
 	<use xlink:href='#gpPt6' transform='translate(700.53,423.96) scale(4.05)' color='rgb( 35, 116, 216)'/>
 	<use xlink:href='#gpPt6' transform='translate(732.99,395.80) scale(4.05)' color='rgb( 35, 116, 216)'/>
 	<use xlink:href='#gpPt6' transform='translate(765.44,333.51) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(797.89,333.51) scale(4.05)' color='rgb( 35, 116, 216)'/>
 	<use xlink:href='#gpPt6' transform='translate(830.35,273.38) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(862.80,273.38) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(895.26,273.38) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(927.71,273.38) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(960.17,273.38) scale(4.05)' color='rgb( 35, 116, 216)'/>
 	<use xlink:href='#gpPt6' transform='translate(992.62,212.17) scale(4.05)' color='rgb( 35, 116, 216)'/>
 	<use xlink:href='#gpPt6' transform='translate(1025.07,150.97) scale(4.05)' color='rgb( 35, 116, 216)'/>
 	<use xlink:href='#gpPt6' transform='translate(1057.53,89.76) scale(4.05)' color='rgb( 35, 116, 216)'/>
-	<use xlink:href='#gpPt6' transform='translate(298.15,90.01) scale(4.05)' color='rgb( 35, 116, 216)'/>
 </g>
 	</g>
 <g fill="none" color="#FFFFFF" stroke="rgb( 35, 116, 216)" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">

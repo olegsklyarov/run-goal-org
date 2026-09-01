@@ -59,11 +59,14 @@ final class GnuplotRenderer implements ChartRenderer
         foreach ($series->points() as $point) {
             $actual = $point->actual();
             $lines[] = sprintf(
-                "%d\t%s\t%d\t%s",
+                "%d\t%s\t%d\t%s\t%s",
                 $point->index(),
                 $point->label(),
                 $point->isSunday() ? 1 : 0,
-                $actual === null ? 'NaN' : sprintf('%.2f', $actual)
+                $actual === null ? 'NaN' : sprintf('%.2f', $actual),
+                $point->hasMarker() && $actual !== null
+                    ? sprintf('%.2f', $actual)
+                    : 'NaN'
             );
         }
 

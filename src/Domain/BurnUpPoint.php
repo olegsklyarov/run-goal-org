@@ -11,6 +11,7 @@ final class BurnUpPoint
         private readonly string $label,
         private readonly ?float $actual,
         private readonly bool $isSunday,
+        private readonly bool $hasMarker,
     ) {
     }
 
@@ -32,5 +33,10 @@ final class BurnUpPoint
     public function isSunday(): bool
     {
         return $this->isSunday;
+    }
+
+    public function hasMarker(): bool
+    {
+        return $this->hasMarker;
     }
 }
