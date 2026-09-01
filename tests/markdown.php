@@ -38,6 +38,25 @@ test('markdown month round-trip preserves workouts and notes', function (): void
     }
 });
 
+test('markdown month without target_km round-trips and omits the field', function (): void {
+    $dir = tempDir();
+    try {
+        $repository = new FileJournalRepository($dir);
+        $period = YearMonth::fromString('2026-01');
+        $repository->saveMonth(new MonthJournal($period, null, [
+            new Workout(Date::parse('2026-01-31'), 21.66, 'imported total'),
+        ]));
+        $loaded = $repository->loadMonth($period);
+        assertSame(null, $loaded->targetKm());
+        assertSame(1, count($loaded->workouts()));
+        $contents = (string) file_get_contents($repository->monthPath($period));
+        assertTrue(str_contains($contents, "period: 2026-01\n"));
+        assertTrue(!str_contains($contents, 'target_km'));
+    } finally {
+        removeDir($dir);
+    }
+});
+
 test('markdown year round-trip writes twelve months', function (): void {
     $dir = tempDir();
     try {

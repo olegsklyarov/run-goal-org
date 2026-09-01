@@ -85,7 +85,7 @@ final class GnuplotRenderer implements ChartRenderer
             $dataPath,
             $outputPath,
             $series->title(),
-            (string) $series->targetKm(),
+            (string) ($series->targetKm() ?? 0),
             (string) $series->yMax(),
             (string) $series->pointCount(),
             $series->xLabel(),

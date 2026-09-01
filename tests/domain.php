@@ -52,6 +52,19 @@ test('empty journal produces only NaN actuals', function (): void {
         assertSame(null, $point->actual());
     }
     assertFloat(75.0, $series->yMax());
+    assertSame(true, $series->hasIdealPlan());
+});
+
+test('month without target has no ideal plan and y-max from actuals', function (): void {
+    $period = YearMonth::fromString('2026-01');
+    $journal = new MonthJournal($period, null, [
+        new Workout(Date::parse('2026-01-31'), 21.66),
+    ]);
+    $series = BurnUpSeries::fromMonth($journal);
+    assertSame(null, $journal->targetKm());
+    assertSame(false, $series->hasIdealPlan());
+    assertFloat(21.66, $series->points()[30]->actual());
+    assertFloat(30.0, $series->yMax());
 });
 
 test('several workouts on one date are summed', function (): void {

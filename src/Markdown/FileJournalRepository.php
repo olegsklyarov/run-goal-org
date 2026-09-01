@@ -33,8 +33,8 @@ final class FileJournalRepository implements JournalRepository
 
         $contents = $this->readFile($path);
         $front = $this->parser->parseFrontmatter($contents);
-        if (!isset($front['period'], $front['target_km'])) {
-            throw new UserError("В {$path} задайте period и target_km");
+        if (!isset($front['period']) || $front['period'] === '') {
+            throw new UserError("В {$path} задайте period");
         }
 
         $filePeriod = YearMonth::fromString($front['period']);
@@ -42,7 +42,10 @@ final class FileJournalRepository implements JournalRepository
             throw new UserError("В {$path} period {$front['period']} не совпадает с {$period}");
         }
 
-        $targetKm = Number::parsePositive($front['target_km'], 'Цель target_km');
+        $targetKm = null;
+        if (isset($front['target_km']) && $front['target_km'] !== '') {
+            $targetKm = Number::parsePositive($front['target_km'], 'Цель target_km');
+        }
         $rows = $this->parser->parseTable($contents, ['date', 'km']);
         $workouts = [];
         foreach ($rows as $row) {
@@ -76,10 +79,12 @@ final class FileJournalRepository implements JournalRepository
             ];
         }
 
-        $body = $this->writer->frontmatter([
-            'period' => (string) $period,
-            'target_km' => Number::formatKm($journal->targetKm()),
-        ]);
+        $fields = ['period' => (string) $period];
+        $targetKm = $journal->targetKm();
+        if ($targetKm !== null) {
+            $fields['target_km'] = Number::formatKm($targetKm);
+        }
+        $body = $this->writer->frontmatter($fields);
         $body .= "\n\n# {$title}\n\n";
         $body .= $this->writer->table(['date', 'km', 'note'], $rows);
         $body .= "\n\n![График]({$stem}.svg)\n";

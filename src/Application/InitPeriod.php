@@ -17,7 +17,7 @@ final class InitPeriod
     ) {
     }
 
-    public function initMonth(YearMonth $period, float $targetKm): MonthJournal
+    public function initMonth(YearMonth $period, ?float $targetKm = null): MonthJournal
     {
         if ($this->repository->monthExists($period)) {
             throw new UserError("Журнал {$period} уже существует");

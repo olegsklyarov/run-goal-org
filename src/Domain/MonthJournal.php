@@ -13,10 +13,10 @@ final class MonthJournal
      */
     public function __construct(
         private readonly YearMonth $period,
-        private readonly float $targetKm,
+        private readonly ?float $targetKm = null,
         private readonly array $workouts = [],
     ) {
-        if ($targetKm <= 0.0) {
+        if ($targetKm !== null && $targetKm <= 0.0) {
             throw new UserError('Цель target_km должна быть больше нуля');
         }
 
@@ -30,7 +30,7 @@ final class MonthJournal
         return $this->period;
     }
 
-    public function targetKm(): float
+    public function targetKm(): ?float
     {
         return $this->targetKm;
     }

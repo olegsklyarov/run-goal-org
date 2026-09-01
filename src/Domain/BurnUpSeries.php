@@ -14,7 +14,7 @@ final class BurnUpSeries
      */
     public function __construct(
         private readonly array $points,
-        private readonly float $targetKm,
+        private readonly ?float $targetKm,
         private readonly string $title,
         private readonly string $xLabel,
         private readonly float $yStep,
@@ -99,9 +99,14 @@ final class BurnUpSeries
         return $this->points;
     }
 
-    public function targetKm(): float
+    public function targetKm(): ?float
     {
         return $this->targetKm;
+    }
+
+    public function hasIdealPlan(): bool
+    {
+        return $this->targetKm !== null;
     }
 
     public function title(): string
@@ -126,7 +131,7 @@ final class BurnUpSeries
 
     public function yMax(): float
     {
-        $peak = $this->targetKm;
+        $peak = $this->targetKm ?? 0.0;
         foreach ($this->points as $point) {
             $actual = $point->actual();
             if ($actual !== null) {

@@ -140,12 +140,12 @@ final class Application
     {
         $periodText = $args->positionalAt(0);
         if ($periodText === null) {
-            throw new UserError('Укажите месяц: php bin/run init YYYY-MM --target <km>');
+            throw new UserError('Укажите месяц: php bin/run init YYYY-MM [--target <km>]');
         }
-        $target = Number::parsePositive(
-            $args->requireOption('target', 'Укажите --target <km>'),
-            'Цель target_km'
-        );
+        $targetText = $args->option('target');
+        $target = $targetText === null
+            ? null
+            : Number::parsePositive($targetText, 'Цель target_km');
         $period = YearMonth::fromString($periodText);
         $this->initPeriod->initMonth($period, $target);
 
@@ -217,8 +217,8 @@ final class Application
   chart [YYYY-MM|YYYY|all]
       Пересобрать SVG. Без аргумента — текущий месяц и его год.
 
-  init YYYY-MM --target <km>
-      Создать месячный журнал.
+  init YYYY-MM [--target <km>]
+      Создать месячный журнал. Без --target график строится только по факту.
 
   init-year YYYY --target <km>
       Создать годовой журнал (цель года).

@@ -25,7 +25,6 @@ final class ShowStatus
         $journal = $this->repository->loadMonth($period);
         $total = $journal->totalKm();
         $target = $journal->targetKm();
-        $remaining = $target - $total;
         $daysLeft = $this->daysLeftInMonth($period, $today);
         $title = sprintf(
             'Бег: %s %d',
@@ -33,14 +32,20 @@ final class ShowStatus
             $period->year()
         );
 
-        return implode("\n", [
+        $lines = [
             $title,
-            sprintf('Цель:     %s км', Number::formatKm($target)),
+            $target === null
+                ? 'Цель:     не задана'
+                : sprintf('Цель:     %s км', Number::formatKm($target)),
             sprintf('Факт:     %s км', Number::formatKm($total)),
-            sprintf('Осталось: %s км', Number::formatKm($remaining)),
-            sprintf('Дней до конца месяца: %d', $daysLeft),
-            sprintf('Тренировок: %d', count($journal->workouts())),
-        ]);
+        ];
+        if ($target !== null) {
+            $lines[] = sprintf('Осталось: %s км', Number::formatKm($target - $total));
+        }
+        $lines[] = sprintf('Дней до конца месяца: %d', $daysLeft);
+        $lines[] = sprintf('Тренировок: %d', count($journal->workouts()));
+
+        return implode("\n", $lines);
     }
 
     public function forYear(int $year): string
