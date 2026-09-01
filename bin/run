@@ -1,0 +1,14 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+require dirname(__DIR__) . '/src/autoload.php';
+
+use RunOrg\Cli\Application;
+use RunOrg\Config;
+
+$config = Config::load(dirname(__DIR__) . '/config.php');
+$app = Application::fromConfig($config);
+
+exit($app->run($argv));

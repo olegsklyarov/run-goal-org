@@ -2,6 +2,8 @@
 # ARG1=data file, ARG2=output SVG, ARG3=title, ARG4=target km,
 # ARG5=y-axis max, ARG6=number of x points (days or months),
 # ARG7=x-axis label, ARG8=y-axis tick step.
+#
+# TSV columns: 1=index, 2=label, 3=sunday (0/1), 4=actual (NaN if unknown).
 
 set encoding utf8
 # A4 landscape: 297mm × 210mm at 96 dpi (CSS px), so print fills the sheet.
@@ -41,6 +43,6 @@ ideal(x) = target_km * x / n_points
 # Vertical guides: every x tick (current style), Sundays thicker.
 plot \
     ARG1 using 1:(y_max):xticlabels(2) with impulses linewidth 1 dashtype 3 linecolor rgb "#999999" notitle, \
-    ARG1 using 1:(strstrt(strcol(2), "Вс") ? y_max : NaN) with impulses linewidth 1 dashtype 1 linecolor rgb "#999999" notitle, \
+    ARG1 using 1:(int(column(3)) ? y_max : NaN) with impulses linewidth 1 dashtype 1 linecolor rgb "#999999" notitle, \
     [0:n_points] ideal(x) with lines linewidth 1.5 dashtype 2 linecolor rgb "#999999" title "Идеальный план", \
     ARG1 using 1:4 with linespoints linewidth 3 pointtype 7 pointsize 0.9 linecolor rgb "#2374d8" title "Фактический результат"
