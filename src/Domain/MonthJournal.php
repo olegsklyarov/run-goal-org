@@ -48,7 +48,7 @@ final class MonthJournal
         $this->assertBelongs($workout);
 
         $workouts = $this->workouts;
-        $workouts[] = $workout;
+        array_splice($workouts, $this->insertionIndex($workout), 0, [$workout]);
 
         return new self($this->period, $this->targetKm, $workouts);
     }
@@ -86,5 +86,42 @@ final class MonthJournal
                 $this->period
             ));
         }
+    }
+
+    /**
+     * Upper bound in the date-sorted journal: first index with a later day,
+     * or n to append. Same-day workouts stay in insertion order after existing ones.
+     */
+    private function insertionIndex(Workout $workout): int
+    {
+        $nums = [];
+        foreach ($this->workouts as $existing) {
+            $nums[] = (int) $existing->date()->format('j');
+        }
+        $n = count($nums);
+        $target = (int) $workout->date()->format('j');
+
+        $left = -1;
+        $right = $n;
+
+        assert($left === -1 || $nums[$left] <= $target);
+        assert($right === $n || $target < $nums[$right]);
+
+        while ($right - $left > 1) {
+            $middle = intdiv($left + $right, 2);
+            if ($nums[$middle] <= $target) {
+                $left = $middle;
+            } else {
+                $right = $middle;
+            }
+
+            assert($left === -1 || $nums[$left] <= $target);
+            assert($right === $n || $target < $nums[$right]);
+        }
+
+        assert($left === -1 || $nums[$left] <= $target);
+        assert($right === $n || $target < $nums[$right]);
+
+        return $right;
     }
 }

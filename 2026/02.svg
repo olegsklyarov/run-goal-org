@@ -375,44 +375,21 @@
 	<path stroke='rgb(153, 153, 153)'  d='M119.77,704.00 L119.77,54.01 M370.86,704.00 L370.86,54.01 M621.96,704.00 L621.96,54.01 M873.05,704.00 L873.05,54.01
 		 '/></g>
 	</g>
-	<g id="gnuplot_plot_3" ><title>Идеальный план</title>
-<g fill="none" color="#FFFFFF" stroke="rgb(153, 153, 153)" stroke-width="1.50" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<g transform="translate(268.48,75.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >Идеальный план</tspan></text>
-	</g>
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb(153, 153, 153)' stroke-dasharray='3.8,6.0'  d='M276.87,72.01 L319.43,72.01 M83.90,704.00 L94.05,698.57 L104.19,693.14 L114.34,687.71 L124.48,682.28 L134.63,676.85
-		L144.77,671.42 L154.92,665.99 L165.06,660.56 L175.21,655.13 L185.35,649.70 L195.50,644.27 L205.64,638.83 L215.79,633.40
-		L225.93,627.97 L236.08,622.54 L246.22,617.11 L256.37,611.68 L266.51,606.25 L276.66,600.82 L286.80,595.39 L296.95,589.96
-		L307.09,584.53 L317.24,579.10 L327.38,573.67 L337.53,568.24 L347.68,562.81 L357.82,557.38 L367.97,551.95 L378.11,546.52
-		L388.26,541.09 L398.40,535.66 L408.55,530.23 L418.69,524.80 L428.84,519.36 L438.98,513.93 L449.13,508.50 L459.27,503.07
-		L469.42,497.64 L479.56,492.21 L489.71,486.78 L499.85,481.35 L510.00,475.92 L520.14,470.49 L530.29,465.06 L540.43,459.63
-		L550.58,454.20 L560.72,448.77 L570.87,443.34 L581.01,437.91 L591.16,432.48 L601.31,427.05 L611.45,421.62 L621.60,416.19
-		L631.74,410.76 L641.89,405.33 L652.03,399.90 L662.18,394.46 L672.32,389.03 L682.47,383.60 L692.61,378.17 L702.76,372.74
-		L712.90,367.31 L723.05,361.88 L733.19,356.45 L743.34,351.02 L753.48,345.59 L763.63,340.16 L773.77,334.73 L783.92,329.30
-		L794.06,323.87 L804.21,318.44 L814.35,313.01 L824.50,307.58 L834.64,302.15 L844.79,296.72 L854.94,291.29 L865.08,285.86
-		L875.23,280.43 L885.37,274.99 L895.52,269.56 L905.66,264.13 L915.81,258.70 L925.95,253.27 L936.10,247.84 L946.24,242.41
-		L956.39,236.98 L966.53,231.55 L976.68,226.12 L986.82,220.69 L996.97,215.26 L1007.11,209.83 L1017.26,204.40 L1027.40,198.97
-		L1037.55,193.54 L1047.69,188.11 L1057.84,182.68 L1067.98,177.25 L1078.13,171.82 L1088.27,166.39  '/></g>
-	</g>
-	<g id="gnuplot_plot_4" ><title>Фактический результат</title>
+	<g id="gnuplot_plot_3" ><title>Фактический результат</title>
 <g fill="none" color="#FFFFFF" stroke="rgb(153, 153, 153)" stroke-width="3.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="3.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g transform="translate(268.48,93.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
+	<g transform="translate(268.48,75.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
 		<text><tspan font-family="Arial" >Фактический результат</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="3.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb( 35, 116, 216)'  d='M276.87,90.01 L319.43,90.01 M119.77,704.00 L155.64,704.00 L191.51,704.00 L227.38,625.13 L263.25,625.13 L299.12,546.27
+	<path stroke='rgb( 35, 116, 216)'  d='M276.87,72.01 L319.43,72.01 M119.77,704.00 L155.64,704.00 L191.51,704.00 L227.38,625.13 L263.25,625.13 L299.12,546.27
 		L334.99,546.27 L370.86,546.27 L406.73,467.40 L442.61,467.40 L478.48,467.40 L514.35,388.54 L550.22,324.12 L586.09,324.12
 		L621.96,324.12 L657.83,245.25 L693.70,245.25 L729.57,245.25 L765.44,166.39 L801.31,166.39 L837.18,166.39 L873.05,166.39
 		L908.92,166.39 L944.79,166.39 L980.66,166.39 L1016.53,166.39 L1052.40,166.39 L1088.27,166.39  '/></g>
 	</g>
-	<g id="gnuplot_plot_5"  fill="none"><title>gnuplot_plot_5</title>
+	<g id="gnuplot_plot_4"  fill="none"><title>gnuplot_plot_4</title>
 <g fill="none" color="#FFFFFF" stroke="rgb( 35, 116, 216)" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">

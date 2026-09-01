@@ -92,6 +92,42 @@ test('several workouts on one date are summed', function (): void {
     assertSame(false, $series->points()[3]->hasMarker());
 });
 
+test('withWorkout inserts by date before a later entry', function (): void {
+    $journal = new MonthJournal(YearMonth::fromString('2026-03'), 20.48, [
+        new Workout(Date::parse('2026-03-31'), 20.48, 'imported total'),
+    ]);
+    $journal = $journal->withWorkout(new Workout(Date::parse('2026-03-02'), 4.96));
+    $workouts = $journal->workouts();
+    assertSame(2, count($workouts));
+    assertSame('2026-03-02', $workouts[0]->date()->format('Y-m-d'));
+    assertFloat(4.96, $workouts[0]->km());
+    assertSame('2026-03-31', $workouts[1]->date()->format('Y-m-d'));
+    assertSame('imported total', $workouts[1]->note());
+});
+
+test('withWorkout keeps the month sorted for start, middle, end and same day', function (): void {
+    $period = YearMonth::fromString('2026-03');
+    $journal = new MonthJournal($period, 20.48);
+    $journal = $journal->withWorkout(new Workout(Date::parse('2026-03-15'), 5.0));
+    $journal = $journal->withWorkout(new Workout(Date::parse('2026-03-31'), 6.0));
+    $journal = $journal->withWorkout(new Workout(Date::parse('2026-03-01'), 1.0));
+    $journal = $journal->withWorkout(new Workout(Date::parse('2026-03-15'), 0.5));
+    $journal = $journal->withWorkout(new Workout(Date::parse('2026-03-20'), 3.0));
+    $dates = [];
+    foreach ($journal->workouts() as $workout) {
+        $dates[] = $workout->date()->format('Y-m-d');
+    }
+    assertSame([
+        '2026-03-01',
+        '2026-03-15',
+        '2026-03-15',
+        '2026-03-20',
+        '2026-03-31',
+    ], $dates);
+    assertFloat(5.0, $journal->workouts()[1]->km());
+    assertFloat(0.5, $journal->workouts()[2]->km());
+});
+
 test('workout outside the month is rejected', function (): void {
     expectUserError(function (): void {
         new MonthJournal(YearMonth::fromString('2026-08'), 112.0, [

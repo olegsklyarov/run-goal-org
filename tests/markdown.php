@@ -38,6 +38,29 @@ test('markdown month round-trip preserves workouts and notes', function (): void
     }
 });
 
+test('logged workout is written before a later date in the month file', function (): void {
+    $dir = tempDir();
+    try {
+        $repository = new FileJournalRepository($dir);
+        $period = YearMonth::fromString('2026-03');
+        $repository->saveMonth(new MonthJournal($period, 20.48, [
+            new Workout(Date::parse('2026-03-31'), 20.48, 'imported total'),
+        ]));
+        $journal = $repository->loadMonth($period)
+            ->withWorkout(new Workout(Date::parse('2026-03-02'), 4.96));
+        $repository->saveMonth($journal);
+        $contents = (string) file_get_contents($repository->monthPath($period));
+        $early = strpos($contents, '| 2026-03-02 |');
+        $late = strpos($contents, '| 2026-03-31 |');
+        assertTrue($early !== false && $late !== false && $early < $late);
+        $loaded = $repository->loadMonth($period);
+        assertSame('2026-03-02', $loaded->workouts()[0]->date()->format('Y-m-d'));
+        assertSame('2026-03-31', $loaded->workouts()[1]->date()->format('Y-m-d'));
+    } finally {
+        removeDir($dir);
+    }
+});
+
 test('markdown month without target_km round-trips and omits the field', function (): void {
     $dir = tempDir();
     try {
