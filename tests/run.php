@@ -13,6 +13,7 @@ $failures = 0;
 require __DIR__ . '/domain.php';
 require __DIR__ . '/markdown.php';
 require __DIR__ . '/cli.php';
+require __DIR__ . '/web.php';
 
 echo "\n{$passed} passed, {$failures} failed\n";
 exit($failures === 0 ? 0 : 1);
