@@ -493,12 +493,21 @@
 <g fill="none" color="#FFFFFF" stroke="rgb(153, 153, 153)" stroke-width="3.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="3.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<g transform="translate(268.48,93.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
+		<text><tspan font-family="Arial" >Фактический результат</tspan></text>
+	</g>
 </g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="3.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='rgb( 35, 116, 216)'  d='M276.87,90.01 L319.43,90.01 M117.42,704.00 L150.94,704.00 L184.46,704.00 L217.97,704.00 L251.49,704.00 L285.01,704.00
+		L318.53,704.00 L352.05,704.00 L385.57,704.00 L419.08,647.67 L452.60,647.67 L486.12,647.67 L519.64,647.67 L553.16,647.67
+		L586.68,600.87  '/></g>
 	</g>
 	<g id="gnuplot_plot_5"  fill="none"><title>gnuplot_plot_5</title>
 <g fill="none" color="#FFFFFF" stroke="rgb( 35, 116, 216)" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<use xlink:href='#gpPt6' transform='translate(419.08,647.67) scale(4.05)' color='rgb( 35, 116, 216)'/>
+	<use xlink:href='#gpPt6' transform='translate(586.68,600.87) scale(4.05)' color='rgb( 35, 116, 216)'/>
 </g>
 	</g>
 <g fill="none" color="#FFFFFF" stroke="rgb( 35, 116, 216)" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">
